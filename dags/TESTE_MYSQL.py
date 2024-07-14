@@ -13,7 +13,7 @@ default_args = {
 }
 
 dag = DAG(
-    'CONCEXAO_MYSQL_SEXO',
+    'TESTE_MYSQL',
     default_args=default_args,
     description='A simple DAG to test MySQL connection',
     schedule_interval='@once',
