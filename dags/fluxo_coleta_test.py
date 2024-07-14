@@ -127,7 +127,7 @@ def extract_and_load_data():
     pass
 
 dag = DAG(
-    'fluxo_coleta',
+    'fluxo_coleta_test',
     default_args=default_args,
     description='A DAG to extract and load data from website to MySQL',
     schedule_interval='@daily',
