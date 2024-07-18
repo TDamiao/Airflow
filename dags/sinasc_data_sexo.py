@@ -65,7 +65,7 @@ def extract_and_load_data():
 
         driver.find_element_by_xpath('//*[@id="fig2"]').click()  # Seleciona o mês
         sleep(1)
-        driver.find_element_by_xpath(f'//*[@id="S2"]/option[{get_current_month_option()}]').click()
+        driver.find_element_by_xpath('//*[@id="S2"]/option[6]').click()
         sleep(1)
 
         driver.find_element_by_xpath('/html/body/center/div/form/div[4]/div[2]/div[2]/input[1]').click()  # Clica em mostrar
