@@ -123,7 +123,7 @@ def check_ods_result(**kwargs):
         return 'dummy_task'
 
 dag = DAG(
-    'sinasc_data_sexo',
+    'sinasc_new_test',
     default_args=default_args,
     description='A DAG to extract and load data from website to MySQL',
     schedule_interval='@daily',
