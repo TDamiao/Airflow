@@ -8,8 +8,10 @@ https://airflow.apache.org/docs/apache-airflow/2.0.2/start/docker.html
 Processo: 
 
 1° Clone 
+
 2° Criar Diretórios 
 mkdir ./dags ./logs ./plugins ./sql
+
 3° Libera Acesso
 echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
 
