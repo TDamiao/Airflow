@@ -14,13 +14,6 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-"""
-Extrator web_crawler_sinasc
-
-https://github.com/Foradocubo/web_crawler_sinasc 
-
-"""
-
 def extract_and_load_data():
     import pandas as pd
     import mysql.connector
@@ -47,28 +40,21 @@ def extract_and_load_data():
         driver.get('http://tabnet.saude.prefeitura.sp.gov.br/cgi/tabcgi.exe?secretarias/saude/TABNET/sinasc/nascido.def')
         sleep(1)
 
-        driver.find_element_by_xpath('//*[@id="L"]/option[24]').click()  # Seleciona conteúdo em linha
+        driver.find_element_by_xpath('//*[@id="L"]/option[24]').click()
         sleep(1)
-
-        driver.find_element_by_xpath('//*[@id="C"]/option[7]').click()  # Seleciona distritos em coluna
+        driver.find_element_by_xpath('//*[@id="C"]/option[7]').click()
         sleep(1)
-
-        driver.find_element_by_xpath('//*[@id="I"]/option[1]').click()  # Seleciona partos em conteúdo
+        driver.find_element_by_xpath('//*[@id="I"]/option[1]').click()
         sleep(1)
         driver.find_element_by_xpath('//*[@id="I"]/option[2]').click()
         sleep(1)
-
-        driver.find_element_by_xpath('//*[@id="A"]/option[1]').click()  # Seleciona o ano em períodos disponíveis
-        sleep(1)
         driver.find_element_by_xpath('//*[@id="A"]/option[1]').click()
         sleep(1)
-
-        driver.find_element_by_xpath('//*[@id="fig2"]').click()  # Seleciona o mês
+        driver.find_element_by_xpath('//*[@id="fig2"]').click()
         sleep(1)
         driver.find_element_by_xpath('//*[@id="S2"]/option[6]').click()
         sleep(1)
-
-        driver.find_element_by_xpath('/html/body/center/div/form/div[4]/div[2]/div[2]/input[1]').click()  # Clica em mostrar
+        driver.find_element_by_xpath('/html/body/center/div/form/div[4]/div[2]/div[2]/input[1]').click()
         sleep(1)
 
         try:
@@ -120,56 +106,38 @@ def extract_and_load_data():
         connection.commit()
         connection.close()
         return 'SUCESSO'
-    
-    def main():
-        """Função principal."""
-        driver = setup_driver()
-        html = extract_data(driver)
-        vectors = parse_data(html)
-        insert_data_to_mysql(vectors)
-        driver.quit()
 
-    if __name__ == "__main__":
-        main()
+    driver = setup_driver()
+    html = extract_data(driver)
+    vectors = parse_data(html)
+    result = insert_data_to_mysql(vectors)
+    driver.quit()
+    return result
 
-    pass
-
-
-"""Verifica se tem dados no mês"""
-
-def check_ods_result():
-    # Obtém o resultado da tarefa 'ods'
-    ods_result = extract_and_load_data()
-    # Verifica se o resultado é diferente de "Nenhum registro encontrado"
+def check_ods_result(**kwargs):
+    ti = kwargs['ti']
+    ods_result = ti.xcom_pull(task_ids='ods')
     if ods_result == 'SUCESSO':
-        return 'stg'  # Retorna o ID da tarefa 'stg'
+        return 'stg'
     else:
-        return 'dummy_task'  # Retorna o ID da tarefa dummy
-
-
-
+        return 'dummy_task'
 
 dag = DAG(
-    'sinasc_data_sexo',
+    'sinasc_new_test',
     default_args=default_args,
     description='A DAG to extract and load data from website to MySQL',
     schedule_interval='@daily',
     start_date=datetime(2024, 4, 13),
     catchup=False,
-    template_searchpath='/opt/airflow/sql'
 )
 
-
-#Tasks:
-
-
-#Ods
+# Tasks
 ods = PythonOperator(
     task_id='ods',
     python_callable=extract_and_load_data,
     dag=dag,
 )
-#BIFURCA Sucess e insucess
+
 branch_task = BranchPythonOperator(
     task_id='branch_task',
     python_callable=check_ods_result,
@@ -177,21 +145,17 @@ branch_task = BranchPythonOperator(
     dag=dag,
 )
 
-#Encerra caso n tenha dados
 dummy_task = DummyOperator(
     task_id='dummy_task',
     dag=dag,
 )
 
-#stage
 stg = MySqlOperator(
     task_id='stg',
-    mysql_conn_id='Mysql_Sinasc',  # Use o Conn Id configurado anteriormente
-    sql='insert_st_dados_sexo_sinasc.sql',  # O arquivo SQL com o script de inserção
+    mysql_conn_id='Mysql_Sinasc',
+    sql='insert_st_dados_sexo_sinasc.sql',
     dag=dag,
 )
 
-
-#Fluxo
 ods >> branch_task
 branch_task >> [stg, dummy_task]
