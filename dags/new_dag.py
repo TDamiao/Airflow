@@ -1,9 +1,18 @@
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
-from airflow.operators.mysql_operator import MySqlOperator
-from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python import PythonOperator, BranchPythonOperator
+from airflow.operators.mysql import MySqlOperator
+from airflow.operators.dummy import DummyOperator
 from airflow.utils.dates import days_ago
 from datetime import datetime, timedelta
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import NoSuchElementException
+from webdriver_manager.chrome import ChromeDriverManager
+import pandas as pd
+import mysql.connector
+from bs4 import BeautifulSoup
+from time import sleep
 
 default_args = {
     'owner': 'airflow',
@@ -15,16 +24,6 @@ default_args = {
 }
 
 def extract_and_load_data():
-    import pandas as pd
-    import mysql.connector
-    from bs4 import BeautifulSoup
-    from time import sleep
-    from datetime import datetime
-    from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from selenium.common.exceptions import NoSuchElementException
-    from webdriver_manager.chrome import ChromeDriverManager
-
     def setup_driver():
         """Configura e retorna o driver do Chrome."""
         service = Service(ChromeDriverManager().install())
@@ -40,25 +39,25 @@ def extract_and_load_data():
         driver.get('http://tabnet.saude.prefeitura.sp.gov.br/cgi/tabcgi.exe?secretarias/saude/TABNET/sinasc/nascido.def')
         sleep(1)
 
-        driver.find_element_by_xpath('//*[@id="L"]/option[24]').click()
+        driver.find_element(By.XPATH, '//*[@id="L"]/option[24]').click()
         sleep(1)
-        driver.find_element_by_xpath('//*[@id="C"]/option[7]').click()
+        driver.find_element(By.XPATH, '//*[@id="C"]/option[7]').click()
         sleep(1)
-        driver.find_element_by_xpath('//*[@id="I"]/option[1]').click()
+        driver.find_element(By.XPATH, '//*[@id="I"]/option[1]').click()
         sleep(1)
-        driver.find_element_by_xpath('//*[@id="I"]/option[2]').click()
+        driver.find_element(By.XPATH, '//*[@id="I"]/option[2]').click()
         sleep(1)
-        driver.find_element_by_xpath('//*[@id="A"]/option[1]').click()
+        driver.find_element(By.XPATH, '//*[@id="A"]/option[1]').click()
         sleep(1)
-        driver.find_element_by_xpath('//*[@id="fig2"]').click()
+        driver.find_element(By.XPATH, '//*[@id="fig2"]').click()
         sleep(1)
-        driver.find_element_by_xpath('//*[@id="S2"]/option[6]').click()
+        driver.find_element(By.XPATH, '//*[@id="S2"]/option[6]').click()
         sleep(1)
-        driver.find_element_by_xpath('/html/body/center/div/form/div[4]/div[2]/div[2]/input[1]').click()
+        driver.find_element(By.XPATH, '/html/body/center/div/form/div[4]/div[2]/div[2]/input[1]').click()
         sleep(1)
 
         try:
-            element = driver.find_element_by_xpath('/html/body/table[2]/tbody')
+            element = driver.find_element(By.XPATH, '/html/body/table[2]/tbody')
             return element.get_attribute('outerHTML')
         except NoSuchElementException:
             print("Nenhum registro encontrado")
@@ -142,7 +141,6 @@ ods = PythonOperator(
 branch_task = BranchPythonOperator(
     task_id='branch_task',
     python_callable=check_ods_result,
-    provide_context=True,
     dag=dag,
 )
 
