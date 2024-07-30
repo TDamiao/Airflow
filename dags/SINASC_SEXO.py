@@ -25,26 +25,22 @@ def extract_and_load_data():
     from selenium import webdriver
     from selenium.webdriver.common.keys import Keys
     from webdriver_manager.chrome import ChromeDriverManager
+    from selenium import webdriver
     from selenium.webdriver.chrome.service import Service as ChromeService
-    from selenium.common.exceptions import NoSuchElementException
+    from webdriver_manager.chrome import ChromeDriverManager
+
+def setup_driver():
+    """Configura e retorna o driver do Chrome."""
+    driver_path = ChromeDriverManager().install()
+    chrome_service = ChromeService(driver_path)
+    return webdriver.Chrome(service=chrome_service)
 
     driver_path = ChromeDriverManager().install()
 
-    def setup_driver():
-        """Configura e retorna o driver do Chrome."""
-        if driver_path:
-            driver_name = driver_path.split('/')[-1]
-            if driver_name != "chromedriver":
-                driver_path = "/".join(driver_path.split('/')[:-1] + ["chromedriver.exe"])
-                if '/' in driver_path:
-                    driver_path = driver_path.replace('/', '\\')
-                os.chmod(driver_path, 0o755)
-                return webdriver.Chrome(service=ChromeService(driver_path))
-
-    def get_current_month_option():
-        """Retorna a opção do mês atual para seleção."""
-        current_month = int(datetime.now().strftime("%m"))
-        return current_month if current_month != 1 else 13
+def setup_driver():
+    """Configura e retorna o driver do Chrome."""
+    driver_path = ChromeDriverManager().install()
+    return webdriver.Chrome(executable_path=driver_path)
 
     def extract_data(driver):
         """Extrai dados do site e retorna o HTML."""
