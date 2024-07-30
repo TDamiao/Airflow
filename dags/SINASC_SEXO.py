@@ -23,7 +23,8 @@ def extract_and_load_data():
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service
     from selenium.common.exceptions import NoSuchElementException
-    from webdriver_manager.chrome import ChromeDriverManager
+    from selenium.webdriver.chrome.service import Service
+servico = Service(ChromeDriverManager().install())
 
     def setup_driver():
         """Configura e retorna o driver do Chrome."""
