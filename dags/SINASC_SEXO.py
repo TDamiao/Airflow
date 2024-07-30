@@ -24,16 +24,30 @@ default_args = {
 }
 
 def extract_and_load_data():
+    import os
+    import pandas as pd
+    import mysql.connector
+    from bs4 import BeautifulSoup
+    from time import sleep
+    from datetime import datetime
+    from selenium import webdriver
+    from selenium.webdriver.common.keys import Keys
+    from webdriver_manager.chrome import ChromeDriverManager
+    from selenium.webdriver.chrome.service import Service as ChromeService
+    from selenium.common.exceptions import NoSuchElementException
+
+    driver_path = ChromeDriverManager().install()
+
     def setup_driver():
         """Configura e retorna o driver do Chrome."""
-        driver_path = ChromeDriverManager().install()
-        driver_name = driver_path.split('/')[-1]
-        if driver_name != "chromedriver":
-            driver_path = "/".join(driver_path.split('/')[:-1] + ["chromedriver.exe"])
-            if '/' in driver_path:
-                driver_path = driver_path.replace('/', '\\')
-            os.chmod(driver_path, 0o755)
-        return webdriver.Chrome(service=ChromeService(driver_path))
+        if driver_path:
+            driver_name = driver_path.split('/')[-1]
+            if driver_name != "chromedriver":
+                driver_path = "/".join(driver_path.split('/')[:-1] + ["chromedriver.exe"])
+                if '/' in driver_path:
+                    driver_path = driver_path.replace('/', '\\')
+                os.chmod(driver_path, 0o755)
+                return webdriver.Chrome(service=ChromeService(driver_path))
 
     def get_current_month_option():
         """Retorna a opção do mês atual para seleção."""
@@ -118,6 +132,7 @@ def extract_and_load_data():
     result = insert_data_to_mysql(vectors)
     driver.quit()
     return result
+
 
 def check_ods_result(**kwargs):
     ti = kwargs['ti']
