@@ -4,15 +4,7 @@ from airflow.operators.mysql_operator import MySqlOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.utils.dates import days_ago
 from datetime import datetime, timedelta
-import os
-import pandas as pd
-import mysql.connector
-from bs4 import BeautifulSoup
-from time import sleep
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.common.exceptions import NoSuchElementException
-from webdriver_manager.chrome import ChromeDriverManager
+
 
 default_args = {
     'owner': 'airflow',
