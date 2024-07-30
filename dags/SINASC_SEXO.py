@@ -15,15 +15,18 @@ default_args = {
 }
 
 def extract_and_load_data():
-    import pandas as pd
-    import mysql.connector
-    from bs4 import BeautifulSoup
-    from time import sleep
-    from datetime import datetime
-    from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from selenium.common.exceptions import NoSuchElementException
-    from webdriver_manager.chrome import ChromeDriverManager
+import pandas as pd
+import mysql.connector
+from bs4 import BeautifulSoup
+from time import sleep
+from datetime import datetime
+from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import NoSuchElementException
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromiumService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
+navegador = webdriver.Chrome(service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()))
 
     def setup_driver():
         """Configura e retorna o driver do Chrome."""
