@@ -26,13 +26,13 @@ def extract_and_load_data():
     from selenium.webdriver.common.keys import Keys
     from webdriver_manager.chrome import ChromeDriverManager
     from selenium import webdriver
+    from selenium import webdriver
     from selenium.webdriver.chrome.service import Service as ChromeService
-    from webdriver_manager.chrome import ChromeDriverManager
 
 def setup_driver():
     """Configura e retorna o driver do Chrome."""
-    driver_path = ChromeDriverManager().install()
-    chrome_service = ChromeService(driver_path)
+    chrome_driver_path = "/path/to/your/chromedriver"  # Substitua pelo caminho do seu Chromedriver
+    chrome_service = ChromeService(chrome_driver_path)
     return webdriver.Chrome(service=chrome_service)
 
     driver_path = ChromeDriverManager().install()
