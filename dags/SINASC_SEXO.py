@@ -27,7 +27,7 @@ def extract_and_load_data():
 
     def setup_driver():
         """Configura e retorna o driver do Chrome."""
-        service = Service(ChromeDriverManager().install())
+        service = Service(ChromeDriverManager(version="2.46").install())
         return webdriver.Chrome(service=service)
 
     def get_current_month_option():
