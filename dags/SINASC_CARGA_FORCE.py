@@ -13,7 +13,7 @@ default_args = {
 }
 
 dag = DAG(
-    'carga_one_SINASC',
+    'SINASC_CARGA_FORCE',
     default_args=default_args,
     description='A simple DAG to test MySQL connection',
     schedule_interval='@once',
