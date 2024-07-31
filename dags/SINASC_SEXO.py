@@ -172,7 +172,14 @@ dw = MySqlOperator(
     dag=dag,
 )
 
+clear = MySqlOperator(
+    task_id='clear',
+    mysql_conn_id='Mysql_Sinasc',
+    sql='clear_dados_sexo_sinasc.sql', 
+    dag=dag,
+)
+
 ods >> branch_task
 branch_task >> [stg, dummy_task]
-stg >> dw
+stg >> dw >> clear
 branch_task >> dummy_task
