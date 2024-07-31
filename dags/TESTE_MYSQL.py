@@ -27,7 +27,7 @@ dag = DAG(
 t1 = MySqlOperator(
     task_id='insert_stage',
     mysql_conn_id='Mysql_Sinasc',  # Use o Conn Id configurado anteriormente
-    sql='insert_st_dados_sexo_sinasc.sql',
+    sql='Teste_Mysql.sql',
     dag=dag
 )
 
