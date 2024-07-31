@@ -24,7 +24,6 @@ dag = DAG(
 )
 
 
-
 stg = MySqlOperator(
     task_id='stg',
     mysql_conn_id='Mysql_Sinasc',

@@ -25,7 +25,7 @@ dag = DAG(
 
 
 t1 = MySqlOperator(
-    task_id='insert_stage',
+    task_id='insert_result',
     mysql_conn_id='Mysql_Sinasc',  
     sql='Teste_Mysql.sql',
     dag=dag
