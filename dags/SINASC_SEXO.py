@@ -165,5 +165,14 @@ stg = MySqlOperator(
     dag=dag,
 )
 
+dw = MySqlOperator(
+    task_id='dw',
+    mysql_conn_id='Mysql_Sinasc',
+    sql='insert_dw_dados_sexo_sinasc.sql', 
+    dag=dag,
+)
+
 ods >> branch_task
 branch_task >> [stg, dummy_task]
+stg >> dw
+branch_task >> dummy_task
